@@ -5,13 +5,27 @@ import { Pokemon } from './models/pokemon.model.ts';
 const app = new Application();
 const router = new Router();
 
+const allPokemon: Pokemon[] = JSON.parse(await Deno.readTextFile('data/pokemon.json'));
+
 router
   .get('/', (context) => {
     context.response.body = 'Hello World!';
   })
-  .get('/pokemon', async (context) => {
-    const allPokemon: Pokemon[] = JSON.parse(await Deno.readTextFile('data/pokemon.json'));
-    context.response.body = allPokemon;
+  .get('/pokemon', (context) => {
+    context.response.body = allPokemon.map((p) => ({
+      id: p.id,
+      name: p.name.english,
+      type: p.type.join('/'),
+    }));
+  })
+  .get('/pokemon/:id', (context) => {
+    const pokemon = allPokemon.find((p) => p.id.toString() == context.params.id);
+
+    if (pokemon) {
+      context.response.body = pokemon;
+    } else {
+      context.throw(404, 'Pokemon not found!');
+    }
   });
 
 app.use(oakCors());
