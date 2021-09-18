@@ -9,8 +9,7 @@ router
     context.response.body = 'Hello World!';
   })
   .get('/pokemon', async (context) => {
-    const allPokemon = await Deno.readFile('data/pokemon.json');
-    console.log(allPokemon);
+    const allPokemon = JSON.parse(await Deno.readTextFile('data/pokemon.json'));
     context.response.body = allPokemon[0];
   });
 
