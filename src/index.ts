@@ -1,5 +1,6 @@
 import { Application, Router } from 'https://deno.land/x/oak@v9.0.1/mod.ts';
 import { oakCors } from 'https://deno.land/x/cors@v1.2.2/mod.ts';
+import { Pokemon } from './models/pokemon.model.ts';
 
 const app = new Application();
 const router = new Router();
@@ -9,8 +10,8 @@ router
     context.response.body = 'Hello World!';
   })
   .get('/pokemon', async (context) => {
-    const allPokemon = JSON.parse(await Deno.readTextFile('data/pokemon.json'));
-    context.response.body = allPokemon[0];
+    const allPokemon: Pokemon[] = JSON.parse(await Deno.readTextFile('data/pokemon.json'));
+    context.response.body = allPokemon;
   });
 
 app.use(oakCors());
