@@ -26,7 +26,7 @@ router
         // context.response.body = 'Hello Deno!';
     })
     .get('/pokemon', (context) => {
-        console.log('Inside /pokemon', context);
+        console.log('Inside /pokemon', context.request.url.searchParams);
         context.response.body = allPokemon.map((p) => ({
             id: p.id,
             name: p.name.english,
