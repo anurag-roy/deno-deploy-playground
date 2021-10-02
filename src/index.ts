@@ -1,4 +1,4 @@
-import { Application, Router } from 'https://deno.land/x/oak@v9.0.1/mod.ts';
+import { Application, Router, send } from 'https://deno.land/x/oak@v9.0.1/mod.ts';
 import { oakCors } from 'https://deno.land/x/cors@v1.2.2/mod.ts';
 import { Pokemon } from './models/pokemon.model.ts';
 
@@ -8,13 +8,22 @@ const router = new Router();
 const allPokemon: Pokemon[] = JSON.parse(await Deno.readTextFile('data/pokemon.json'));
 
 router
-    .get('/', (context) => {
+    .get('/', async (context) => {
         console.log('Inside root');
-        // await context.send({
-        //     root: `${Deno.cwd()}/src/views`,
-        //     index: 'index.html',
-        // });
-        context.response.body = 'Hello Deno!';
+        try {
+            await send(context, context.request.url.pathname, {
+                root: `${Deno.cwd()}/src/views`,
+                index: 'index.html',
+            });
+        } catch (error) {
+            console.error('Error occured while getting index.html', error);
+            context.response.body = {
+                message: 'Sorry could not get index.html',
+                error,
+            };
+        }
+
+        // context.response.body = 'Hello Deno!';
     })
     .get('/pokemon', (context) => {
         console.log('Inside /pokemon');
