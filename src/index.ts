@@ -8,14 +8,16 @@ const router = new Router();
 const allPokemon: Pokemon[] = JSON.parse(await Deno.readTextFile('data/pokemon.json'));
 
 router
-    .get('/', async (context) => {
-        await context.send({
-            root: `${Deno.cwd()}/src/views`,
-            index: 'index.html',
-        });
+    .get('/', (context) => {
+        console.log('Inside root');
+        // await context.send({
+        //     root: `${Deno.cwd()}/src/views`,
+        //     index: 'index.html',
+        // });
+        context.response.body = 'Hello Deno!';
     })
     .get('/pokemon', (context) => {
-        console.log('Params for this request', context.params);
+        console.log('Inside /pokemon');
         context.response.body = allPokemon.map((p) => ({
             id: p.id,
             name: p.name.english,
@@ -23,6 +25,7 @@ router
         }));
     })
     .get('/pokemon/:id', (context) => {
+        console.log('Inside /pokemon/:id');
         const pokemon = allPokemon.find((p) => p.id.toString() == context.params.id);
 
         if (pokemon) {
